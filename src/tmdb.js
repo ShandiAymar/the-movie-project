@@ -1,25 +1,15 @@
-const axios = require("axios");
+export async function fetchMovies(apiKey) {
+  try {
+    console.log("Antes de la solicitud a la API");
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}`
+    );
+    const data = await response.json();
+    console.log("Después de la solicitud a la API, respuesta:", data);
 
-// Configura tu clave de API de TMDb
-const apiKey = "3279c8a95e8766108057e3c654d5b2ea";
-
-// URL del endpoint para descubrir películas
-const discoverMoviesEndpoint = "https://api.themoviedb.org/3/discover/movie";
-
-// Parámetros de ejemplo para obtener las películas más populares
-const params = {
-  api_key: apiKey,
-  sort_by: "popularity.desc",
-};
-
-// Realiza la solicitud HTTP a TMDb
-axios
-  .get(discoverMoviesEndpoint, { params })
-  .then((response) => {
-    // Maneja la respuesta aquí
-    console.log(response.data);
-  })
-  .catch((error) => {
-    // Maneja los errores aquí
-    console.error("Error al obtener películas:", error.message);
-  });
+    return data.results;
+  } catch (error) {
+    console.error("Error al obtener el listado de películas:", error);
+    throw error; // Puedes elegir manejar el error aquí o lanzarlo para que se maneje en el componente que llama a esta función.
+  }
+}

@@ -6,8 +6,11 @@ import {
   createWebHashHistory,
 } from "vue-router";
 import routes from "./routes";
-import Vue from "vue";
+import { createApp } from "vue";
 import App from "src/App.vue";
+import axios from "axios";
+import MovieList from "src/components/movies/MovieList.vue";
+import VueAxios from "vue-axios";
 
 /*
  * If not building with SSR mode, you can
@@ -17,6 +20,17 @@ import App from "src/App.vue";
  * async/await or return a Promise which resolves
  * with the Router instance.
  */
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+// Usa VueAxios con axios
+router.beforeEach((to, from, next) => {
+  VueAxios.install(app, axios);
+  next();
+});
 
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
@@ -38,10 +52,9 @@ export default route(function (/* { store, ssrContext } */) {
   return Router;
 });
 
-Vue.config.productionTip = false;
+const app = createApp(App);
 
-Vue.component("movie-list", MovieList);
+app.use(VueAxios, axios);
+app.component("movie-list", MovieList);
 
-new Vue({
-  render: (h) => h(App),
-}).$mount("#app");
+app.mount("#app");
